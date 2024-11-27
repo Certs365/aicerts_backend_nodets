@@ -9,7 +9,7 @@ import { messageCode } from "../common/codes";
  */
 const getBadgeTemplates = async (req: Request, res: Response): Promise<void> => {
     const { email } = req.body;
-
+    console.log(email, "email")
     try {
         const templates = await BadgeTemplate.find({ email });
 
