@@ -1,0 +1,83 @@
+export const messageCode = {
+    // Tasks Messages
+    msgDbReady: "Database connection is Ready",
+    msgDbNotReady: "Database connection is Not Ready",
+
+    // Response code messages
+    msgInternalError: "Unable to reach the server, Please try again...",
+
+    // Validation Error codes Issues (Route)
+    msgInvalidFile: "Invalid file uploaded / Please Try again ...",
+    msgEnterInvalid: "Entered invalid input / Please check and try again...",
+    msgInvalidEmail: "Entered invalid Email",
+    msgNonEmpty: "Input field cannot be empty",
+    msgInputProvide: "Input should be provided",
+    msgInvalidFormat: "Entered input format is invalid",
+    msgInvalidDate: "Entered date format is invalid",
+    msgInvalidEthereum: "Invalid Issuer ID format",
+    msgPhoneNumberLimit: "Entered Phone Number must not exceed 10 characters",
+    msgNameMaxLength: "Entered Name must not exceed 40 characters",
+    msgOrgMaxLength: "Entered Organization must not exceed 40 characters",
+    msgUnameMaxLength: "Entered Username must not exceed 40 characters",
+    msgPwdMaxLength: "Entered password must between 8 to 30 characters",
+    msgNoSpecialCharacters: "No special characters are allowed in name",
+
+    // Issuer Messages
+    msgValidCredentials: "Valid Issuer Credentials",
+    msgInvalidPassword: "Invalid password entered!",
+    msgInvalidPhone: "Invalid phone number entered!",
+    msgErrorOnComparePassword: "An error occurred while comparing passwords",
+    msgInvalidOrUnapproved: "Invalid credentials entered (or) Issuer not approved",
+    msgExistingUserError: "An error occurred while checking for existing user",
+    msgInvalidOtp: "Invalid OTP entered / bad format.",
+    msgErrorOnLogin: "Error Occured during the Login",
+    msgErrorOnOtp: "An error occurred while sending OTP",
+    msgIssuerNotFound: "Issuer not found / not Active",
+    msgIssuerFound: "Issuer Found",
+    msgOtpSent: "OTP sent to the Issuer Email",
+    msgExistEmail: "User with the provided email already exists",
+    msgSignupSuccess: "User signup successful",
+    msgEnterOrgEmail: "Please Enter Your Organisation Email",
+    msgIssuerUpdated: "Issuer updated successfully",
+    msgErroOnPwdReset: "An error occurred during password reset process!",
+    msgPwdNotSame: "Password cannot be the same as the previous one!",
+    msgPwdReset: "Password reset successful",
+    msgErrorOnSaveUser: "An error occurred while saving user account!",
+    msgErrorOnPwdHash: "An error occurred while hashing password!",
+    msgNoRecordFound: "No verification record found for the provided email",
+    msgCodeNotMatch: "Verification code does not match",
+    msgVerfySuccess: "Verification successful",
+    msgVerifyError: "An error occurred during the verification process",
+
+    // Auth Messages
+    msgInvalidToken: "Provided invalid token",
+    msgTokenExpired: "Invalid OTP or Token Expired",
+
+    // Migrated Fetching APIs Messages
+    msgAllIssuersFetched: "All Issuer details fetched successfully",
+    msgErrorOnFetching: "Unable to process requested details, Please try again",
+    msgGraphDataFetched: "Graph data fetched successfully",
+    msgInvalidGraphInput: "Please provide valid Graph Input",
+    msgMatchFound: "Requested results found",
+    msgNoMatchFound: "No matching results found",
+    msgOperationSuccess: "Uploaded successfully",
+    msgAdminMailNotExist: "Admin with the provided email not exist",
+    msgInvalidIssuer: "Invalid / Inactive Issuer email",
+    msgUnableToProcessRequest: "Unable to process the request",
+    msgProvideValidFlag: "Please provide valid flag value as 1, 2",
+    msgStartDateShouldOld: "Provided Start date must not be future date to the End date",
+    msgUnableToGenerateRepoert:
+        "Unable to generating the report, Please try again...",
+    msgServerNameExist:
+        "Server name already existed, Please try again with different name",
+    msgServerNameNotExist:
+        "Server name not available, Please try again with valid name",
+    msgServerDeleted: "Server details deleted successfully",
+    msgFetchedVerificationCourses:
+        "Verification results count fetched successfully with searched course",
+    msgInvalidFlag: "Provide valid flag value",
+    msgProvideValidFilter: "Please provide valid filter key",
+    msgIssueFound: "Credential details found",
+    msgInvalidInput: "Invalid Input parameter",
+    msgUserNotFound: "Issuer not found! / Issuer not Approved",
+};
