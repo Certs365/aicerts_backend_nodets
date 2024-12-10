@@ -20,6 +20,7 @@ export interface BatchIssues extends Document {
     width?: number;
     height?: number;
     qrOption: number;
+    blockchainOption: number;
     url?: string;
 }
 
@@ -43,6 +44,7 @@ const BatchIssuesSchema = new Schema<BatchIssues>({
     width: { type: Number },
     height: { type: Number },
     qrOption: { type: Number, default: 0 },
+    blockchainOption: { type: Number, default: 0 },
     url: { type: String },
 });
 

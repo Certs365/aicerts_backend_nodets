@@ -15,6 +15,7 @@ export interface DynamicIssues extends Document {
     positionY: number;
     qrSize: number;
     qrOption: number;
+    blockchainOption: number;
     url?: string;
     type: string;
 }
@@ -34,6 +35,7 @@ const DynamicIssuesSchema = new Schema<DynamicIssues>({
     positionY: { type: Number, required: true },
     qrSize: { type: Number, required: true },
     qrOption: { type: Number, required: true },
+    blockchainOption: { type: Number, default: 0 },
     url: { type: String },
     type: { type: String, required: true },
 });

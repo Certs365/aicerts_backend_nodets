@@ -18,6 +18,7 @@ export interface DynamicBatchIssues extends Document {
     positionY: number;
     qrSize: number;
     qrOption: number;
+    blockchainOption: number;
     url?: string;
     type: string;
 }
@@ -40,6 +41,7 @@ const DynamicBatchIssuesSchema = new Schema<DynamicBatchIssues>({
     positionY: { type: Number, required: true },
     qrSize: { type: Number, required: true },
     qrOption: { type: Number, required: true },
+    blockchainOption: { type: Number, default: 0 },
     url: { type: String },
     type: { type: String, required: true },
 });

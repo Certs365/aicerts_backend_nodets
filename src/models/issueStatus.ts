@@ -10,6 +10,7 @@ export interface IssueStatus extends Document {
     course: string;
     expirationDate: string;
     certStatus: number;
+    blockchainOption: number;
     lastUpdate: Date;
 }
 
@@ -23,6 +24,7 @@ const IssueStatusSchema = new Schema<IssueStatus>({
     course: { type: String, required: true },
     expirationDate: { type: String, required: true },
     certStatus: { type: Number, required: true },
+    blockchainOption: { type: Number, default: 0 },
     lastUpdate: { type: Date, default: Date.now },
 });
 
