@@ -2,11 +2,12 @@ import dotenv from 'dotenv';
 // Initialize environment variables
 dotenv.config();
 
-import express, { Request, Response } from "express";
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import cors from "cors";
-import connectDB from "./src/config/dbConnect"; // Adjust path if necessary
+import cors from 'cors';
+import connectDB from './src/config/dbConnect'; // Adjust path if necessary
 import allRoutes from './src/routes/index';
+import { connectMailServer } from './src/utils/mailFetching';
 
 // Initialize database connection
 connectDB();
@@ -23,4 +24,5 @@ app.use('/api', allRoutes);
 const PORT = process.env.PORT || 8005;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  connectMailServer();
 });
