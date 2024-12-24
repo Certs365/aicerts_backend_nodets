@@ -8,6 +8,7 @@ import cors from 'cors';
 import connectDB from './src/config/dbConnect'; // Adjust path if necessary
 import allRoutes from './src/routes/index';
 import { connectMailServer } from './src/utils/mailFetching';
+import logger from './src/utils/logger';
 
 // Initialize database connection
 connectDB();
@@ -23,6 +24,5 @@ app.use('/api', allRoutes);
 // Start the server
 const PORT = process.env.PORT || 8005;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  connectMailServer();
+  logger.info(`Server running on http://localhost:${PORT}`);
 });
