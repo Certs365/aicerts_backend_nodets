@@ -35,7 +35,7 @@ router.delete(
 
 router.post(
   '/add-user-subscription-plan',
-  // decryptRequestBody,
+  decryptRequestBody,
   validateRequest(subscriptionValidation.addUserSubscriptionPlanSchema),
   subscriptionController.addUserSubscriptionPlan
 );
