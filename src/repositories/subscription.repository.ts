@@ -49,7 +49,7 @@ const findPlan = async (code: string): Promise<ISubscriptionPlan | null> => {
     const userExists: ISubscriptionPlan | null = await SubscriptionPlan.findOne(
       {
         code,
-        approved: true,
+        status: true,
       }
     );
     return userExists;

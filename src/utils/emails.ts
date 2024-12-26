@@ -1,6 +1,6 @@
 import { TransportOptions, createTransport } from 'nodemailer';
 import logger from './logger';
-import { IUserSubscriptionPlan } from '../models/userSubscription';
+import puppeteer from 'puppeteer';
 
 const transportConfig = {
   service: process.env.SMTP_MAIL_SERVICE,
@@ -16,6 +16,23 @@ const transportConfig = {
 const transporter = createTransport(transportConfig as TransportOptions);
 
 const from = `"Certs365" <${process.env.SMTP_USER_MAIL}>`;
+
+const generatePDFInMemory = async (htmlContent: string) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  // Set the HTML content of the page
+  await page.setContent(htmlContent);
+
+  // Generate PDF as a buffer
+  const pdfBuffer = await page.pdf({
+    format: 'A4',
+    printBackground: true,
+  });
+
+  await browser.close();
+  return pdfBuffer;
+};
 
 export const sendGrievanceEmail = async (email: string, paymentID: string) => {
   try {
@@ -332,6 +349,65 @@ export const planPurchasedEmail = async (
     const purchasedDateFormatted = new Date(
       userPlan.purchasedDate
     ).toLocaleDateString('en-US');
+
+    const invoiceHtml = `<div style="max-width: 214px;"><img alt="" height="auto" src="https://images.netcomlearning.com/ai-certs/Certs365-logo.svg" style="display: block; height: auto; border: 0; width: 100%;" title="" width="214"/></div>
+    <div style="margin-inline: 10px;text-align: end;">
+    Name: ${name} <br/>
+    Email: ${email} <br/>
+    Invoice Date: ${purchasedDateFormatted} <br/>
+    Plan Duration: ${userPlan.subscriptionDuration} days
+    </div>
+     <table border="0" cellpadding="10" cellspacing="0" class="table_block mobile_hide block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%"> 
+  <tr>
+  <td class="pad">
+  <table style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; width: 100%; table-layout: fixed; direction: ltr; background-color: #ffffff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; color: #222222; text-align: right; letter-spacing: 0px; word-break: break-all;" width="100%">
+  <thead style="vertical-align: top; background-color: #eddab2; color: #222222; font-size: 16px; line-height: 120%;">
+  <tr>
+  <th style="padding: 10px; word-break: break-word; font-weight: 700; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent; text-align: right;" width="25%"><strong>Plan Name</strong></th>
+  <th style="padding: 10px; word-break: break-word; font-weight: 700; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent; text-align: right;" width="25%">Credits</th>
+  <th style="padding: 10px; word-break: break-word; font-weight: 700; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent; text-align: right;" width="25%">Price</th>
+  <th style="padding: 10px; word-break: break-word; font-weight: 700; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent; text-align: right;" width="25%">Total</th>
+  </tr>
+  </thead>
+  <tbody style="vertical-align: top; font-size: 14px; line-height: 120%;">
+  <tr style="background-color:#f9f9f9;">
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">${userPlan.subscriptionPlanTitle} Plan</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">${userPlan.allocatedCredentials}</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">$${userPlan.subscriptionFee}</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">$${userPlan.subscriptionFee}</td>
+  </tr>
+  <tr>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  </tr>
+  <tr style="background-color:#f9f9f9;">
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">Subtotal</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">$${userPlan.subscriptionFee}</td>
+  </tr>
+  <tr>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">Taxes (%)</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">$00.00</td>
+  </tr>
+  <tr style="background-color:#f9f9f9;">
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%">​</td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%"><strong>GRAND TOTAL</strong></td>
+  <td style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;" width="25%"><strong>$${userPlan.subscriptionFee}</strong></td>
+  </tr>
+  </tbody>
+  </table>
+  </td>
+  </tr>
+  </table>	<br/>
+  <p style="margin-inline: 10px">Thank you for choosing us.</p>`;
+
+    const invoicePdfBuffer = await generatePDFInMemory(invoiceHtml);
 
     const mailOptions = {
       from,
@@ -703,18 +779,6 @@ export const planPurchasedEmail = async (
   </td>
   </tr>
   </table>
-  <table border="0" cellpadding="25" cellspacing="0" class="button_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-  <tr>
-  <td class="pad">
-  <div align="center" class="alignment"><!--[if mso]>
-  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://certs365.aicerts.io/contact-us/" style="height:38px;width:235px;v-text-anchor:middle;" arcsize="27%" stroke="false" fillcolor="#222222">
-  <w:anchorlock/>
-  <v:textbox inset="0px,0px,0px,0px">
-  <center dir="false" style="color:#ffffff;font-family:Arial, sans-serif;font-size:14px">
-  <![endif]--><a href="https://certs365.aicerts.io/contact-us/" style="background-color:#222222;border-bottom:0px solid transparent;border-left:0px solid transparent;border-radius:10px;border-right:0px solid transparent;border-top:0px solid transparent;color:#ffffff;display:inline-block;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;mso-border-alt:none;padding-bottom:5px;padding-top:5px;text-align:center;text-decoration:none;width:auto;word-break:keep-all;" target="_blank"><span style="word-break: break-word; padding-left: 30px; padding-right: 30px; font-size: 14px; display: inline-block; letter-spacing: 2px;"><span style="margin: 0; word-break: break-word; line-height: 28px;">DOWNLOAD INVOICE</span></span></a><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></div>
-  </td>
-  </tr>
-  </table>
   </td>
   </tr>
   </tbody>
@@ -836,9 +900,9 @@ export const planPurchasedEmail = async (
   <div align="center" class="alignment">
   <table border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; " width="108px">
   <tr>
-    <td style="padding:0 5px 0 5px;"><a href="https://www.youtube.com" target="_blank"><img alt="Youtube" height="auto" src="https://images.netcomlearning.com/cms/icons/youtube-footer-icon.png" style="display: block; height: auto; border: 0;" title="Youtube" width="32"/></a></td>
-    <td style="padding:0 5px 0 5px;"><a href="https://www.linkedin.com" target="_blank"><img alt="Linkedin" height="auto" src="https://images.netcomlearning.com/cms/icons/linkedin-white.svg" style="display: block; height: auto; border: 0;" title="Linkedin" width="32"/></a></td>
-    <td style="padding:0 5px 0 5px;"><a href="https://www.x.com/" target="_blank"><img alt="X" height="auto" src="https://images.netcomlearning.com/cms/images/twitter-new-logo_076622f5.png" style="display: block; height: auto; border: 0;" title="X" width="32"/></a></td>
+    <td style="padding:0 5px 0 5px;"><a href="https://www.youtube.com/@AICERTs" target="_blank"><img alt="Youtube" height="auto" src="https://images.netcomlearning.com/cms/icons/youtube-footer-icon.png" style="display: block; height: auto; border: 0;" title="Youtube" width="32"/></a></td>
+    <td style="padding:0 5px 0 5px;"><a href="https://www.linkedin.com/company/certs-365/" target="_blank"><img alt="Linkedin" height="auto" src="https://images.netcomlearning.com/cms/icons/linkedin-white.svg" style="display: block; height: auto; border: 0;" title="Linkedin" width="32"/></a></td>
+    <td style="padding:0 5px 0 5px;"><a href="https://x.com/Certs_365" target="_blank"><img alt="X" height="auto" src="https://images.netcomlearning.com/cms/images/twitter-new-logo_076622f5.png" style="display: block; height: auto; border: 0;" title="X" width="32"/></a></td>
   </tr>
   </table>
   </div>
@@ -900,8 +964,15 @@ export const planPurchasedEmail = async (
   </tbody>
   </table><!-- End -->
   </body>`,
+      attachments: [
+        {
+          filename: 'invoice.pdf', // Name of the PDF file to be attached
+          content: invoicePdfBuffer as Buffer<ArrayBufferLike>, // Attach the PDF buffer directly
+          encoding: 'base64',
+        },
+      ],
     };
-    await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions);
   } catch (error: any) {
     logger.error(`Error: Failed to sent mail`, error);
   }

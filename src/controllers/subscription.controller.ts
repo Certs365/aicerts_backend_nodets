@@ -119,6 +119,7 @@ const addUserSubscriptionPlan = async (req: Request, res: Response) => {
   try {
     logger.info('Start: addUserSubscriptionPlanController');
     const { email, code } = req.body;
+    console.log(code);
 
     const response: ResponseHandlerType =
       await subscriptionService.addUserSubscriptionPlan(email, code);
