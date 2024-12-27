@@ -1,10 +1,10 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import subscriptionController from '../controllers/subscription.controller';
 import validateRequest from '../middlewares/validationHandler';
 import subscriptionValidation from '../utils/ValidationSchema/subscriptionSchema';
 import { decryptRequestBody } from '../utils/authUtils';
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger

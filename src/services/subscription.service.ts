@@ -315,9 +315,7 @@ const getIssuerSubscriptionDetails = async (
 ): Promise<ResponseHandlerType> => {
   try {
     logger.info('Start: getIssuerSubscriptionDetailsService');
-    const user: IUser | null = await subsscriptionRepository.findUser(
-      email as string
-    );
+    const user: IUser | null = await subsscriptionRepository.findUser(email);
     if (!user) {
       logger.info(`${email} issuer is not available/approved.`);
       return responseHandler(
@@ -488,9 +486,7 @@ const createCheckoutSession = async (
 const createGrievance = async (email: string, paymentID: string) => {
   try {
     logger.info('Start: createGrievanceService');
-    const user: IUser | null = await subsscriptionRepository.findUser(
-      email as string
-    );
+    const user: IUser | null = await subsscriptionRepository.findUser(email);
     if (!user) {
       logger.info(`${email} issuer is not available/approved.`);
       return responseHandler(
@@ -525,9 +521,7 @@ const createGrievance = async (email: string, paymentID: string) => {
 const fetchPaymentDetails = async (email: string, sessionId: string) => {
   try {
     logger.info('Start: fetchPaymentDetailsService');
-    const user: IUser | null = await subsscriptionRepository.findUser(
-      email as string
-    );
+    const user: IUser | null = await subsscriptionRepository.findUser(email);
     if (!user) {
       logger.info(`${email} issuer is not available/approved.`);
       return responseHandler(
