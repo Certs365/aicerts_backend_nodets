@@ -396,7 +396,7 @@ const getIssuerSubscriptionDetails = async (
     return responseHandler(
       200,
       responseScenario.success,
-      messageCodes.msgLimitAboutToExhaust,
+      messageCodes.msgPlanDetailsFetched,
       {
         planDetails: getLatestPlanDetails(
           subscribedPlan as IUserSubscriptionPlan
