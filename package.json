@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node dist/app.js",
     "build": "tsc",
-    "dev": "nodemon --exec npx ts-node app.ts"
+    "dev": "nodemon --exec npx ts-node src/app.ts"
   },
   "author": "",
   "license": "ISC",
@@ -50,6 +50,7 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",
     "nodemon": "^3.1.9",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }

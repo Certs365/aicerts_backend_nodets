@@ -2,13 +2,13 @@ import dotenv from 'dotenv';
 // Initialize environment variables
 dotenv.config();
 
-import express, { Request, Response } from 'express';
+import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import connectDB from './src/config/dbConnect'; // Adjust path if necessary
-import allRoutes from './src/routes/index';
-import { connectMailServer } from './src/utils/mailFetching';
-import logger from './src/utils/logger';
+import connectDB from './config/dbConnect'; // Adjust path if necessary
+import allRoutes from './routes/index';
+import { connectMailServer } from './utils/mailFetching';
+import logger from './utils/logger';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
