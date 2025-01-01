@@ -7,7 +7,6 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDB from './config/dbConnect'; // Adjust path if necessary
 import allRoutes from './routes/index';
-import { connectMailServer } from './utils/mailFetching';
 import logger from './utils/logger';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
@@ -35,10 +34,11 @@ const app = express();
 app.use(bodyParser.json()); // Parse JSON request bodies
 app.use(cors());
 
-// swagger
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Mount routes
 app.use('/api', allRoutes);
+
+// swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Start the server
 const PORT = process.env.PORT || 8005;
