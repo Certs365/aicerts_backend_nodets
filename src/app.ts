@@ -20,6 +20,16 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'API documentation for Issuer Module API',
     },
+    servers: [
+      {
+        url: '/',
+        description: 'Baseurl for server',
+      },
+      {
+        url: `/${process.env.PROXY_PATH}`,
+        description: 'Extra path for proxy route',
+      },
+    ],
   },
   apis: ['./src/routes/*.ts'], // Update the path to match your actual routes folder
 };
@@ -38,7 +48,7 @@ app.use(cors());
 app.use('/api', allRoutes);
 
 // swagger
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Start the server
 const PORT = process.env.PORT || 8005;
