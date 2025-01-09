@@ -12,7 +12,7 @@ import { isValidEmail } from '../utils/helper';
 const statusGraphDetails = async (req: Request, res: Response) => {
   try {
     logger.info('Start: statusGraphDetailsController');
-    const { email } = req.params;
+    const { email, month, year } = req.params;
 
     if (!isValidEmail(email)) {
       const response: ResponseHandlerType = responseHandler(
@@ -25,7 +25,7 @@ const statusGraphDetails = async (req: Request, res: Response) => {
       return;
     }
     const response: ResponseHandlerType =
-      await issuerDashboardService.statusGraphDetails(email);
+      await issuerDashboardService.statusGraphDetails(email, month, year);
     res.status(response.code).json(response);
   } catch (error: any) {
     logger.error('Error: statusGraphDetailsController', error);
@@ -71,4 +71,35 @@ const graphDetails = async (req: Request, res: Response) => {
   }
 };
 
-export default { statusGraphDetails, graphDetails };
+const issuerLogs = async (req: Request, res: Response) => {
+  try {
+    logger.info('Start: issuerLogsController');
+    const { email } = req.params;
+
+    if (!isValidEmail(email)) {
+      const response: ResponseHandlerType = responseHandler(
+        400,
+        responseScenario.fail,
+        messageCodes.msgInvalidGraphInput,
+        { email }
+      );
+      res.status(response.code).json(response);
+      return;
+    }
+    const response: ResponseHandlerType =
+      await issuerDashboardService.issuerLogs(email);
+    res.status(response.code).json(response);
+  } catch (error: any) {
+    logger.error('Error: issuerLogsController', error);
+    const response: ResponseHandlerType = responseHandler(
+      500,
+      responseScenario.fail,
+      messageCodes.msgInternalError
+    );
+    res.status(response.code).json(response);
+  } finally {
+    logger.info('End: issuerLogsController');
+  }
+};
+
+export default { statusGraphDetails, graphDetails, issuerLogs };

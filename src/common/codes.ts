@@ -96,4 +96,7 @@ export const messageCodes = Object.freeze({
   msgPlanDeleted: 'Plan removed successfully',
   msgLimitAboutToExhaust: 'Limit About to Exhaust',
   msgGrievanceSent: 'Grievance request placed successfully',
+
+  // Dashboard apis
+  msgIssueLogsFetched: 'Issuer Logs data fetched successfully',
 });

@@ -2,12 +2,16 @@ import redisClient from '../config/redis.config';
 import logger from './logger';
 
 export const getKey = async (
-  hashKey: string,
-  key: string
+  issuerId: string,
+  key: string = ''
 ): Promise<string | null | undefined> => {
   try {
-    return await redisClient.hget(hashKey, key);
+    const dashboardKey: string = `dashboard:${issuerId}`;
+    if (key) {
+      return await redisClient.hget(dashboardKey, key);
+    }
+    return JSON.stringify(await redisClient.hgetall(dashboardKey));
   } catch (error: any) {
-    logger.error('Error: Redis get key: ', error);
+    logger.error(`Error: Redis get key(${issuerId}): `, error);
   }
 };
