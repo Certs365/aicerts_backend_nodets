@@ -8,7 +8,11 @@ import { DynamicBatchIssues } from "../models/dynamicBatchIssues";
 
 
 import { messageCodes } from "../common/codes";
-
+import {
+    responseHandler,
+    ResponseHandlerType,
+    responseScenario,
+  } from '../utils/responseHandler';
 import { groupOrganizationsFromInput } from "../services/fetch.service";
 
 const cloudBucket = '.png';
@@ -92,85 +96,85 @@ export const getOrgIssues = async (req: Request, res: Response): Promise<void> =
         //     }
         //   });
 
-        if (getIssuers && getIssuers.length > 0) {
-            // Extract issuerIds
-            var getIssuerIds = getIssuers.map(item => item.issuerId);
-          } else {
-            res.status(400).json({ code: 400, status: "FAILED", message: messageCode.msgNoMatchFound });
-          }
+        // if (getIssuers && getIssuers.length > 0) {
+        //     // Extract issuerIds
+        //     var getIssuerIds = getIssuers.map(item => item.issuerId);
+        //   } else {
+        //     res.status(400).json({ code: 400, status: "FAILED", message: messageCode.msgNoMatchFound });
+        //   }
       
-          for (let i = 0; i < getIssuerIds.length; i++) {
-            const currentIssuerId = getIssuerIds[i];
+        //   for (let i = 0; i < getIssuerIds.length; i++) {
+        //     const currentIssuerId = getIssuerIds[i];
       
-            // Query 1
-            var query1Promise = Issues.find({
-              issuerId: currentIssuerId,
-              $expr: {
-                $and: [
-                  { $eq: [{ $toLower: "$name" }, targetName.toLowerCase()] }
-                ]
-              },
-              url: { $exists: true, $ne: null, $ne: "", $regex: cloudBucket } // Filter to include documents where `url` exists
-            });
+        //     // Query 1
+        //     var query1Promise = Issues.find({
+        //       issuerId: currentIssuerId,
+        //       $expr: {
+        //         $and: [
+        //           { $eq: [{ $toLower: "$name" }, targetName.toLowerCase()] }
+        //         ]
+        //       },
+        //       url: { $exists: true, $ne: [null, ""], $regex: cloudBucket } // Filter to include documents where `url` exists
+        //     });
       
-            // Query 2
-            var query2Promise = BatchIssues.find({
-              issuerId: currentIssuerId,
-              $expr: {
-                $and: [
-                  { $eq: [{ $toLower: "$name" }, targetName.toLowerCase()] }
-                ]
-              },
-              url: { $exists: true, $ne: null, $ne: "", $regex: cloudBucket } // Filter to include documents where `url` exists
-            });
+        //     // Query 2
+        //     var query2Promise = BatchIssues.find({
+        //       issuerId: currentIssuerId,
+        //       $expr: {
+        //         $and: [
+        //           { $eq: [{ $toLower: "$name" }, targetName.toLowerCase()] }
+        //         ]
+        //       },
+        //       url: { $exists: true, $ne: [null, ""], $regex: cloudBucket } // Filter to include documents where `url` exists
+        //     });
       
-            // Query 3
-            var query3Promise = DynamicBatchIssues.find({
-              issuerId: currentIssuerId,
-              $expr: {
-                $and: [
-                  { $eq: [{ $toLower: "$name" }, targetName.toLowerCase()] }
-                ]
-              },
-              url: { $exists: true, $ne: null, $ne: "", $regex: cloudBucket } // Filter to include documents where `url` exists
-            });
+        //     // Query 3
+        //     var query3Promise = DynamicBatchIssues.find({
+        //       issuerId: currentIssuerId,
+        //       $expr: {
+        //         $and: [
+        //           { $eq: [{ $toLower: "$name" }, targetName.toLowerCase()] }
+        //         ]
+        //       },
+        //       url: { $exists: true, $ne: [null, ""], $regex: cloudBucket } // Filter to include documents where `url` exists
+        //     });
       
-            // Query 4
-            var query4Promise = DynamicIssues.find({
-              issuerId: currentIssuerId,
-              $expr: {
-                $and: [
-                  { $eq: [{ $toLower: "$name" }, targetName.toLowerCase()] }
-                ]
-              },
-              url: { $exists: true, $ne: null, $ne: "", $regex: cloudBucket } // Filter to include documents where `url` exists
-            });
+        //     // Query 4
+        //     var query4Promise = DynamicIssues.find({
+        //       issuerId: currentIssuerId,
+        //       $expr: {
+        //         $and: [
+        //           { $eq: [{ $toLower: "$name" }, targetName.toLowerCase()] }
+        //         ]
+        //       },
+        //       url: { $exists: true, $ne: [null, ""], $regex: cloudBucket } // Filter to include documents where `url` exists
+        //     });
       
-            // Await both promises
-            var [query1Result, query2Result, query3Result, query4Result] = await Promise.all([query1Promise, query2Promise, query3Promise, query4Promise]);
-            // Check if results are non-empty and push to finalResults
-            if (query1Result.length > 0) {
-              // fetchedIssues.push(query1Result);
-              fetchedIssues = fetchedIssues.concat(query1Result);
-            }
-            if (query2Result.length > 0) {
-              // fetchedIssues.push(query2Result);
-              fetchedIssues = fetchedIssues.concat(query2Result);
-            }
-            // Check if results are non-empty and push to finalResults
-            if (query3Result.length > 0) {
-              // fetchedIssues.push(query1Result);
-              fetchedIssues = fetchedIssues.concat(query3Result);
-            }
-            if (query4Result.length > 0) {
-              // fetchedIssues.push(query2Result);
-              fetchedIssues = fetchedIssues.concat(query4Result);
-            }
-          }
+        //     // Await both promises
+        //     var [query1Result, query2Result, query3Result, query4Result] = await Promise.all([query1Promise, query2Promise, query3Promise, query4Promise]);
+        //     // Check if results are non-empty and push to finalResults
+        //     if (query1Result.length > 0) {
+        //       // fetchedIssues.push(query1Result);
+        //       fetchedIssues = fetchedIssues.concat(query1Result);
+        //     }
+        //     if (query2Result.length > 0) {
+        //       // fetchedIssues.push(query2Result);
+        //       fetchedIssues = fetchedIssues.concat(query2Result);
+        //     }
+        //     // Check if results are non-empty and push to finalResults
+        //     if (query3Result.length > 0) {
+        //       // fetchedIssues.push(query1Result);
+        //       fetchedIssues = fetchedIssues.concat(query3Result);
+        //     }
+        //     if (query4Result.length > 0) {
+        //       // fetchedIssues.push(query2Result);
+        //       fetchedIssues = fetchedIssues.concat(query4Result);
+        //     }
+        //   }
       
-          if (fetchedIssues.length == 0) {
-            res.status(400).json({ code: 400, status: "FAILED", message: messageCode.msgNoMatchFound });
-          }
+        //   if (fetchedIssues.length == 0) {
+        //     res.status(400).json({ code: 400, status: "FAILED", message: messageCode.msgNoMatchFound });
+        //   }
 
         res.status(200).json({ code: 200, status: "SUCCESS", message: messageCodes.msgMatchFound, details: organizations });
     } catch (error) {

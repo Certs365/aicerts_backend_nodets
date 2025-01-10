@@ -1,5 +1,5 @@
 import express from 'express';
-import { getOrgs, setGroupedOrgs, getGroupedOrgs } from '../controllers/fetch';
+import { getOrgs, setGroupedOrgs, getGroupedOrgs, getOrgIssues } from '../controllers/fetch';
 
 const router = express.Router();
 
@@ -60,5 +60,7 @@ router.get('/get-orgs', getOrgs);
 router.post('/set-group-orgs', setGroupedOrgs);
 
 router.get('/get-organization-details', getGroupedOrgs);
+
+router.post('/get-organization-issues', getOrgIssues);
 
 export default router;
