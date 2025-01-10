@@ -25,6 +25,7 @@ export interface IUser extends Document {
   transactionFee: number;
   qrPreference: number;
   blockchainPreference: number;
+  refreshToken: string;
   certificatesIssued?: number;
   certificatesRenewed?: number;
   approveDate?: Date | null;
@@ -55,6 +56,7 @@ const UserSchema = new Schema<IUser>({
   transactionFee: { type: Number, default: 0 },
   qrPreference: { type: Number, default: 0 },
   blockchainPreference: { type: Number, default: 0 },
+  refreshToken: { type: String },
   certificatesIssued: { type: Number },
   certificatesRenewed: { type: Number },
   approveDate: { type: Date, default: null },

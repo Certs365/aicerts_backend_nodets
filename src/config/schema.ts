@@ -18,6 +18,11 @@ interface ServerDetails extends Document {
   lastUpdate: Date;
 }
 
+interface Organization extends Document {
+    mainOrgName: { type: String, unique: true };
+    aliases: [String];
+}
+
 // Define the interface for ServiceAccountQuotas document
 interface ServiceAccountQuotas extends Document {
   issuerId: string;
@@ -55,6 +60,7 @@ interface User extends Document {
   transactionFee: number;
   qrPreference: number;
   blockchainPreference: number;
+  refreshToken: string;
   certificatesIssued?: number;
   certificatesRenewed?: number;
   approveDate?: Date | null;
@@ -292,11 +298,17 @@ const Issues = mongoose.model<Issues>('Issues', new Schema({
   type: { type: String, default: null }
 }));
 
+const Organization = mongoose.model<Organization>('Organization', new Schema({
+  mainOrgName: { type: String, unique: true },
+  aliases: [String],
+}));
+
 // Continue for other schemas...
 
 export {
   Admin,
   Verification,
+  Organization,
   ServiceAccountQuotas,
   User,
   Issues,

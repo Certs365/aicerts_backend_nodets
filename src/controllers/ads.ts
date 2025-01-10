@@ -12,12 +12,6 @@ export const uploadFileS3 = async (req: Request, res: Response): Promise<void> =
   }
 
   console.log(file)
- 
-
-
-
-
-
 
   try {
     const keyName=`dev/${file.originalname}`
