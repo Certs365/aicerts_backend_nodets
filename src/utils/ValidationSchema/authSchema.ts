@@ -31,36 +31,36 @@ const signUpSchema = Joi.object({
       'any.required': messageCodes.msgNonEmpty,
       'string.pattern.base': messageCodes.msgPwdRegex,
     }),
-  name: Joi.string().trim().empty('').required().max(40).messages({
-    'string.max': messageCodes.msgNameMaxLength,
-    'any.required': messageCodes.msgInputProvide,
-    'string.empty': messageCodes.msgNonEmpty,
-  }),
-  organization: Joi.string().trim().empty('').required().max(40).messages({
-    'string.max': messageCodes.msgOrgMaxLength,
-    'any.required': messageCodes.msgInputProvide,
-    'string.empty': messageCodes.msgNonEmpty,
-  }),
-  organizationType: Joi.string().optional(),
-  industrySector: Joi.string().optional(),
-  address: Joi.string().optional(),
-  city: Joi.string().optional(),
-  state: Joi.string().optional(),
-  country: Joi.string().optional(),
-  zip: Joi.string()
-    .optional()
-    .pattern(/^\d{6}$/)
-    .messages({
-      'string.pattern.base': messageCodes.msgZipLimit,
-    }),
-  websiteLink: Joi.string().optional().uri(),
-  phoneNumber: Joi.string()
-    .optional()
-    .pattern(/^\d{10}$/)
-    .messages({
-      'string.pattern.base': messageCodes.msgPhoneNumberLimit,
-    }),
-  designation: Joi.string().optional(),
+  // name: Joi.string().trim().empty('').required().max(40).messages({
+  //   'string.max': messageCodes.msgNameMaxLength,
+  //   'any.required': messageCodes.msgInputProvide,
+  //   'string.empty': messageCodes.msgNonEmpty,
+  // }),
+  // organization: Joi.string().trim().empty('').required().max(40).messages({
+  //   'string.max': messageCodes.msgOrgMaxLength,
+  //   'any.required': messageCodes.msgInputProvide,
+  //   'string.empty': messageCodes.msgNonEmpty,
+  // }),
+  // organizationType: Joi.string().optional(),
+  // industrySector: Joi.string().optional(),
+  // address: Joi.string().optional(),
+  // city: Joi.string().optional(),
+  // state: Joi.string().optional(),
+  // country: Joi.string().optional(),
+  // zip: Joi.string()
+  //   .optional()
+  //   .pattern(/^\d{6}$/)
+  //   .messages({
+  //     'string.pattern.base': messageCodes.msgZipLimit,
+  //   }),
+  // websiteLink: Joi.string().optional().uri(),
+  // phoneNumber: Joi.string()
+  //   .optional()
+  //   .pattern(/^\d{10}$/)
+  //   .messages({
+  //     'string.pattern.base': messageCodes.msgPhoneNumberLimit,
+  //   }),
+  // designation: Joi.string().optional(),
 }).options({ abortEarly: false });
 
 const loginSchema = Joi.object({

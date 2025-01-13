@@ -48,7 +48,7 @@ const createUser = async (body: Record<string, any>) => {
       name: name.trim(),
       organization: organization.trim(),
       email: email.trim(),
-      password, // Assume password is already hashed or will be hashed later
+      password,
       issuerId,
       address: address.trim(),
       country: country.trim(),
