@@ -28,6 +28,7 @@ export interface IUser extends Document {
   certificatesIssued?: number;
   certificatesRenewed?: number;
   approveDate?: Date | null;
+  refreshToken?: string;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -36,8 +37,8 @@ const UserSchema = new Schema<IUser>({
   email: { type: String, required: true },
   password: { type: String, required: true },
   issuerId: { type: String, required: true },
-  approved: { type: Boolean },
-  status: { type: Number },
+  approved: { type: Boolean, default: true },
+  status: { type: Number, default: 1 },
   address: { type: String },
   country: { type: String },
   organizationType: { type: String },
@@ -48,7 +49,6 @@ const UserSchema = new Schema<IUser>({
   websiteLink: { type: String },
   phoneNumber: { type: String },
   designation: { type: String },
-  username: { type: String },
   rejectedDate: { type: Date, default: null },
   invoiceNumber: { type: Number, default: 0 },
   batchSequence: { type: Number, default: 0 },
@@ -58,6 +58,7 @@ const UserSchema = new Schema<IUser>({
   certificatesIssued: { type: Number },
   certificatesRenewed: { type: Number },
   approveDate: { type: Date, default: null },
+  refreshToken: { type: String },
 });
 
 export const User = mongoose.model<IUser>('User', UserSchema);

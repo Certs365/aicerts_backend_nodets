@@ -19,11 +19,14 @@ export const messageCodes = Object.freeze({
   msgInvalidFormat: 'Entered input format is invalid',
   msgInvalidDate: 'Entered date format is invalid',
   msgInvalidEthereum: 'Invalid Issuer ID format',
-  msgPhoneNumberLimit: 'Entered Phone Number must not exceed 10 characters',
+  msgZipLimit: 'Entered Zip must be 6 digits',
+  msgPhoneNumberLimit: 'Entered Phone Number must be 10 digits',
   msgNameMaxLength: 'Entered Name must not exceed 40 characters',
   msgOrgMaxLength: 'Entered Organization must not exceed 40 characters',
   msgUnameMaxLength: 'Entered Username must not exceed 40 characters',
   msgPwdMaxLength: 'Entered password must between 8 to 30 characters',
+  msgPwdRegex:
+    'Password must be 8-30 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
   msgNoSpecialCharacters: 'No special characters are allowed in name',
 
   // Issuer Messages

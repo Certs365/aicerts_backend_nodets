@@ -3,44 +3,74 @@ import CryptoJS from 'crypto-js';
 import { Request, Response, NextFunction } from 'express';
 import { responseHandler, responseScenario } from './responseHandler';
 import { messageCodes } from '../common/codes';
+import logger from './logger';
+import crypto from 'crypto';
+import { ethers } from 'ethers';
 
-function generateJwtToken(): string {
-  try {
-    const expiresInMinutes = process.env.JWT_EXPIRE;
-    const expireTimeUnit = process.env.JWT_EXPIRE_TIME || 'm'; // Default to minutes
-    const claims = { authType: 'User' };
-    if (!process.env.ACCESS_TOKEN_SECRET) {
-      throw new Error(
-        'ACCESS_TOKEN_SECRET is not defined in environment variables'
-      );
-    }
-    const token = jwt.sign(claims, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: `${expiresInMinutes}${expireTimeUnit}`,
-    });
-    return token;
-  } catch (error) {
-    console.error('Error generating JWT token:', error);
-    throw error;
-  }
-}
+const {
+  ACCESS_TOKEN_SECRET,
+  JWT_EXPIRE,
+  JWT_EXPIRE_TIME = 'm',
+  REFRESH_TOKEN,
+  REFRESH_TOKEN_EXPIRE,
+  REFRESH_TOKEN_EXPIRE_TIME = 'd',
+  ENCRYPTION_KEY,
+} = process.env;
 
-function generateRefreshToken(user: { _id: string }): string {
+const generateJwtToken = (issuerId: string): string => {
   try {
-    const expiresInDays = process.env.REFRESH_TOKEN_EXPIRE;
-    const expireTimeUnit = process.env.REFRESH_TOKEN_EXPIRE_TIME || 'd'; // Default to days
-    const claims = { authType: 'User', userId: user._id };
-    if (!process.env.REFRESH_TOKEN) {
-      throw new Error('REFRESH_TOKEN is not defined in environment variables');
+    if (!ACCESS_TOKEN_SECRET) {
+      throw new Error('Missing ACCESS_TOKEN_SECRET in environment variables.');
     }
-    const refreshToken = jwt.sign(claims, process.env.REFRESH_TOKEN, {
-      expiresIn: `${expiresInDays}${expireTimeUnit}`,
-    });
-    return refreshToken;
-  } catch (error) {
-    console.error('Error generating refresh token:', error);
-    throw error;
+
+    const claims = { issuerId, authType: 'User' };
+    const expiresIn = `${JWT_EXPIRE}${JWT_EXPIRE_TIME}`; // e.g., '15m'
+
+    return jwt.sign(claims, ACCESS_TOKEN_SECRET, { expiresIn });
+  } catch (error: any) {
+    logger.error('Error: Failed to generate JWT token: ', error);
+    throw new Error('Unable to generate token. Please try again later.');
   }
-}
+};
+
+const generateRefreshToken = (issuerId: string): string => {
+  try {
+    if (!REFRESH_TOKEN) {
+      throw new Error('Missing REFRESH_TOKEN in environment variables.');
+    }
+
+    const claims = { authType: 'User', issuerId };
+    const expiresIn = `${REFRESH_TOKEN_EXPIRE}${REFRESH_TOKEN_EXPIRE_TIME}`; // e.g., '1d'
+
+    return jwt.sign(claims, REFRESH_TOKEN, { expiresIn });
+  } catch (error: any) {
+    logger.error('Error: Failed to generate refresh token: ', error);
+    throw new Error(
+      'Unable to generate refresh token. Please try again later.'
+    );
+  }
+};
+
+const verifyRefreshToken = async (token: string) => {
+  try {
+    if (!REFRESH_TOKEN) {
+      throw new Error('Missing REFRESH_TOKEN in environment variables.');
+    }
+    // Return a promise-based jwt.verify
+    const userData = await new Promise<any>((resolve, reject) => {
+      jwt.verify(token, REFRESH_TOKEN, (err, decoded) => {
+        if (err) {
+          return reject(err); // Reject the promise if there is an error
+        }
+        resolve(decoded); // Resolve the promise with userData if successful
+      });
+    });
+    return userData; // Return userData to the caller
+  } catch (error: any) {
+    logger.error('Error: Failed to verify refresh token: ', error);
+    return null;
+  }
+};
 
 // Middleware to decrypt the request body
 const decryptRequestBody = (
@@ -49,8 +79,7 @@ const decryptRequestBody = (
   next: NextFunction
 ): void => {
   try {
-    const key = process.env.ENCRYPTION_KEY; // Use an environment variable for the encryption key
-    if (!key) {
+    if (!ENCRYPTION_KEY) {
       throw new Error('ENCRYPTION_KEY is not defined in environment variables');
     }
 
@@ -58,7 +87,7 @@ const decryptRequestBody = (
 
     if (encryptedData) {
       // Decrypt the data
-      const decryptedData = decryptData(encryptedData, key);
+      const decryptedData = decryptData(encryptedData, ENCRYPTION_KEY);
 
       // Replace the body with decrypted data
       req.body = decryptedData;
@@ -85,4 +114,36 @@ const decryptData = (encryptedData: string, key: string): any => {
   return JSON.parse(decrypted); // Parse the string to get the original data
 };
 
-export { generateJwtToken, generateRefreshToken, decryptRequestBody };
+const generateOtp = (): number => {
+  try {
+    // Generate a secure 6-digit OTP
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    return Number(otp);
+  } catch (error: any) {
+    logger.error('Error: generating OTP:', error);
+    throw new Error('Failed to generate OTP. Please try again later.');
+  }
+};
+
+// Function to generate a new Ethereum account with a private key
+const generateAccountAddress = () => {
+  try {
+    const id = crypto.randomBytes(32).toString('hex');
+    const privateKey = '0x' + id;
+    const wallet = new ethers.Wallet(privateKey);
+    const addressWithoutPrefix = wallet.address; // Remove '0x' from the address
+    return addressWithoutPrefix;
+  } catch (error: any) {
+    logger.error('Error: generating Ethereum account:', error);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+};
+
+export {
+  generateJwtToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+  decryptRequestBody,
+  generateOtp,
+  generateAccountAddress,
+};
