@@ -63,6 +63,25 @@ const signUpSchema = Joi.object({
   // designation: Joi.string().optional(),
 }).options({ abortEarly: false });
 
+const onboardingSchema = Joi.object({
+  email: authValidation.email,
+  name: Joi.string().trim().empty('').required().max(40).messages({
+    'string.max': messageCodes.msgNameMaxLength,
+    'any.required': messageCodes.msgInputProvide,
+    'string.empty': messageCodes.msgNonEmpty,
+  }),
+  organization: Joi.string().trim().empty('').required().max(40).messages({
+    'string.max': messageCodes.msgOrgMaxLength,
+    'any.required': messageCodes.msgInputProvide,
+    'string.empty': messageCodes.msgNonEmpty,
+  }),
+  organizationType: Joi.string().empty('').required().messages({
+    'string.empty': messageCodes.msgNonEmpty,
+  }),
+  industrySector: Joi.string().required(),
+  designation: Joi.string().optional(),
+}).options({ abortEarly: false });
+
 const loginSchema = Joi.object({
   email: authValidation.email,
   password: authValidation.password,
@@ -70,6 +89,9 @@ const loginSchema = Joi.object({
 
 const twoFactorAuthSchema = Joi.object({
   email: authValidation.email,
+  code: Joi.string()
+    .required()
+    .pattern(/^\d{6}$/),
 }).options({ abortEarly: false });
 
 const refreshTokenSchema = Joi.object({
@@ -80,9 +102,23 @@ const refreshTokenSchema = Joi.object({
   }),
 }).options({ abortEarly: false });
 
+const forgetPasswordSchema = Joi.object({
+  email: authValidation.email,
+});
+
+const verifyIssuerSchema = Joi.object({
+  email: authValidation.email,
+  code: Joi.string()
+    .required()
+    .pattern(/^\d{6}$/),
+});
+
 export default {
   signUpSchema,
   loginSchema,
   twoFactorAuthSchema,
   refreshTokenSchema,
+  onboardingSchema,
+  forgetPasswordSchema,
+  verifyIssuerSchema,
 };

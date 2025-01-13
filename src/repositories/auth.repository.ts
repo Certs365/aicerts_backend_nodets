@@ -2,6 +2,9 @@ import logger from '../utils/logger';
 import { IUser, User } from '../models/user';
 import { Verification } from '../models/verification';
 import { ServiceAccountQuotas } from '../models/serviceAccountQuotas';
+import { responseHandler, responseScenario } from '../utils/responseHandler';
+import { messageCodes } from '../common/codes';
+import { generateOtp } from '../utils/authUtils';
 
 const serviceLimit = Number(process.env.SERVICE_LIMIT) || 10;
 
@@ -122,7 +125,27 @@ const updateUserRefreshToken = async (
   }
 };
 
-const saveUserOtp = async (email: string, otp: number) => {
+const userVerificationCode = async (email: string) => {
+  try {
+    logger.info('Start: authRepository:userVerificationCode');
+    const verify = await Verification.findOne({
+      $expr: {
+        $eq: [{ $toLower: '$email' }, email.toLowerCase()],
+      },
+    });
+    if (verify?.code) {
+      return verify.code;
+    }
+    return '';
+  } catch (error: any) {
+    logger.error('Start: authRepository:userVerificationCode:', error);
+    return '';
+  } finally {
+    logger.info('Start: authRepository:userVerificationCode');
+  }
+};
+
+const saveUserOtp = async (email: string) => {
   try {
     logger.info('Start: authRepository:saveUserOtp');
     const verify = await Verification.findOne({
@@ -130,6 +153,7 @@ const saveUserOtp = async (email: string, otp: number) => {
         $eq: [{ $toLower: '$email' }, email.toLowerCase()],
       },
     });
+    const otp = generateOtp();
     if (verify) {
       verify.code = otp;
       verify.verified = false;
@@ -142,12 +166,46 @@ const saveUserOtp = async (email: string, otp: number) => {
       });
       await createVerify.save();
     }
-    return true;
+    return otp;
   } catch (error: any) {
     logger.error('Error: authRepository:saveUserOtp:', error);
     throw Error('Error wile setting the otp for user');
   } finally {
     logger.info('End: authRepository:saveUserOtp');
+  }
+};
+
+const updateOnboardingDeatils = async (body: Record<string, any>) => {
+  try {
+    logger.info('Start: authRepository:updateOnboardingDeatils');
+    const {
+      email,
+      name,
+      organization,
+      organizationType,
+      industrySector,
+      designation = '',
+    } = body;
+    const user = await findUser(email);
+    if (user) {
+      user.name = name.trim();
+      user.organization = organization.trim();
+      user.organizationType = organizationType.trim();
+      user.industrySector = industrySector.trim();
+      user.designation = designation.trim();
+      await user.save();
+      return user;
+    }
+    return responseHandler(
+      404,
+      responseScenario.fail,
+      messageCodes.msgExistingUserError
+    );
+  } catch (error: any) {
+    logger.error('Error: authRepository:updateOnboardingDeatils', error);
+    return null;
+  } finally {
+    logger.info('End: authRepository:updateOnboardingDeatils');
   }
 };
 
@@ -157,4 +215,6 @@ export default {
   createUserServiceQuote,
   updateUserRefreshToken,
   saveUserOtp,
+  updateOnboardingDeatils,
+  userVerificationCode,
 };

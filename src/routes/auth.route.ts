@@ -3,6 +3,7 @@ import authValidation from '../utils/ValidationSchema/authSchema';
 import validateRequest from '../middlewares/validationHandler';
 import { decryptRequestBody } from '../utils/authUtils';
 import authController from '../controllers/auth.controller';
+import passport from 'passport';
 
 const router = Router();
 
@@ -135,6 +136,13 @@ router.post(
   decryptRequestBody,
   validateRequest(authValidation.signUpSchema),
   authController.signup
+);
+
+router.post(
+  '/onboarding',
+  decryptRequestBody,
+  validateRequest(authValidation.onboardingSchema),
+  authController.onboarding
 );
 
 /**
@@ -348,6 +356,7 @@ router.post(
  */
 router.post(
   '/two-factor-auth',
+  decryptRequestBody,
   validateRequest(authValidation.twoFactorAuthSchema),
   authController.twoFactor
 );
@@ -469,6 +478,50 @@ router.post(
   decryptRequestBody,
   validateRequest(authValidation.refreshTokenSchema),
   authController.refreshToken
+);
+
+router.post(
+  '/forget-password',
+  decryptRequestBody,
+  validateRequest(authValidation.forgetPasswordSchema),
+  authController.forgetPassword
+);
+
+router.post(
+  '/verify-issuer',
+  decryptRequestBody,
+  validateRequest(authValidation.verifyIssuerSchema),
+  authController.verifyIssuer
+);
+
+// Route to start Google OAuth authentication
+router.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// Callback route to handle the Google response after authentication
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  authController.oAuthSignup
+);
+
+// Route to start LinkedIn OAuth authentication
+router.get(
+  '/auth/linkedin',
+  passport.authenticate('linkedin', {
+    scope: ['profile', 'email'],
+  })
+);
+
+// Callback route to handle the LinkedIn response after authentication
+router.get(
+  '/auth/linkedin/callback',
+  passport.authenticate('linkedin', {
+    failureRedirect: '/login',
+  }),
+  authController.oAuthSignup
 );
 
 export default router;

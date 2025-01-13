@@ -10,6 +10,9 @@ import allRoutes from './routes/index';
 import logger from './utils/logger';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import './config/passport';
+import passport from 'passport';
+import session from 'express-session';
 
 // Swagger setup
 const swaggerOptions = {
@@ -33,6 +36,19 @@ connectDB();
 const app = express();
 app.use(bodyParser.json()); // Parse JSON request bodies
 app.use(cors());
+
+// Passport session for OAuth
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Initialize Passport with session
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Mount routes
 app.use('/api', allRoutes);

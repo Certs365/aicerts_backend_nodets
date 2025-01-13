@@ -29,13 +29,14 @@ export interface IUser extends Document {
   certificatesRenewed?: number;
   approveDate?: Date | null;
   refreshToken?: string;
+  oauthId?: string;
 }
 
 const UserSchema = new Schema<IUser>({
-  name: { type: String, required: true },
-  organization: { type: String, required: true },
+  name: { type: String, default: null },
+  organization: { type: String, default: null },
   email: { type: String, required: true },
-  password: { type: String, required: true },
+  password: { type: String, default: null },
   issuerId: { type: String, required: true },
   approved: { type: Boolean, default: true },
   status: { type: Number, default: 1 },
@@ -57,7 +58,7 @@ const UserSchema = new Schema<IUser>({
   blockchainPreference: { type: Number, default: 0 },
   certificatesIssued: { type: Number },
   certificatesRenewed: { type: Number },
-  approveDate: { type: Date, default: null },
+  approveDate: { type: Date, default: Date.now },
   refreshToken: { type: String },
 });
 
